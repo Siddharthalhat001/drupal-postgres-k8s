@@ -17,25 +17,11 @@ spec:
       containers:
       - name: postgres
         image: postgres
-        volumeMounts:
-        - name: web-data
-          mountPath: /var/lib/postgresql/data
         ports:
         - containerPort: 5432
-        env:
-#        - name: POSTGRES_USER
-#          valueFrom:
-#            secretKeyRef:
-#              name: postgres-secret
-#              key: postgres-root-username
-
-        - name: POSTGRES_PASSWORD
-          valueFrom: 
-            secretKeyRef:
-              name: postgres-secret
-              key: postgres-root-password
-      volumes:
-      - name: web-data
+        env:      
+        POSTGRES_PASSWORD: admin
+          
 ---
 apiVersion: v1
 kind: Service

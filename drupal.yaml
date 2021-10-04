@@ -17,15 +17,25 @@ spec:
       containers:
       - name: drupal
         image: drupal
+        volumeMounts:
+        - name: web-modules
+          mountPath: /var/www/html/modules
+        - name: web-profiles
+          mountPath: /var/www/html/profiles
+        - name: web-themes
+          mountPath: /var/www/html/themes
+        - name: web-sites
+          mountPath: /var/www/html/sites
+        
         ports:
-        - containerPort: 8080
+        - containerPort: 80
+        env:
+#        - name: POSTGRES_USER
+#          valueFrom:
+#            secretKeyRef:
+#              name: postgres-secret
+#              key: postgres-root-username
 
-         env:
-        - name: POSTGRES_USER
-          valueFrom:
-            secretKeyRef:
-              name: postgres-secret
-              key: postgres-root-username
         - name:  POSTGRES_PASSWORD
           valueFrom: 
             secretKeyRef:
@@ -33,11 +43,21 @@ spec:
               key: postgres-root-password
 
 
-        - name: ME_CONFIG_MONGODB_SERVER
+        - name: POSTGRES_DB
           valueFrom: 
             configMapKeyRef:
               name: postgres-configmap
               key: database_url
+
+
+      volumes:
+      - name: web-data 
+      - name: web-modules
+      - name: web-profiles
+      - name: web-themes
+      - name: web-sites
+
+
 ---
 apiVersion: v1
 kind: Service
@@ -49,6 +69,6 @@ spec:
   type: NodePort  
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
-      nodePort: 30000
+      port: 80
+#      targetPort: 8080
+      nodePort: 30001
